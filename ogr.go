@@ -1555,8 +1555,17 @@ func (layer Layer) SetIgnoredFields(names []string) error {
 // Will be new in 2.0
 
 // Clip off areas that are not covered by the provided layer
-// Unimplemented: Clip
-// Will be new in 2.0
+func (layer Layer) Clip(method Layer, result Layer, options []string) error {
+	length := len(options)
+	opts := make([]*C.char, length+1)
+	for i := 0; i < length; i++ {
+		opts[i] = C.CString(options[i])
+		defer C.free(unsafe.Pointer(opts[i]))
+	}
+	opts[length] = (*C.char)(unsafe.Pointer(nil))
+
+	return C.OGR_L_Clip(layer.cval, method.cval, result.cval, (**C.char)(unsafe.Pointer(&opts[0])), nil, nil).Err()
+}
 
 // Remove areas that are covered by the provided layer
 // Unimplemented: Erase
