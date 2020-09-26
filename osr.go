@@ -4,6 +4,7 @@ package gdal
 #include "go_gdal.h"
 #include "gdal_version.h"
 
+#cgo openbsd pkg-config: gdal
 #cgo linux  pkg-config: gdal
 #cgo darwin pkg-config: gdal
 #cgo windows LDFLAGS: -Lc:/gdal/release-1600-x64/lib -lgdal_i
