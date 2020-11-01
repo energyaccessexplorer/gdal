@@ -1541,8 +1541,17 @@ func (layer Layer) SetIgnoredFields(names []string) error {
 }
 
 // Return the intersection of two layers
-// Unimplemented: Intersection
-// Will be new in 2.0
+func (layer Layer) Intersection(method Layer, result Layer, options []string) (err error) {
+	length := len(options)
+	opts := make([]*C.char, length+1)
+	for i := 0; i < length; i++ {
+		opts[i] = C.CString(options[i])
+		defer C.free(unsafe.Pointer(opts[i]))
+	}
+	opts[length] = (*C.char)(unsafe.Pointer(nil))
+
+	return C.OGR_L_Intersection(layer.cval, method.cval, result.cval, (**C.char)(unsafe.Pointer(&opts[0])), nil, nil).Err()
+}
 
 // Return the union of two layers
 // Unimplemented: Union
