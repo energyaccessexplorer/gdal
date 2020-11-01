@@ -632,6 +632,12 @@ func (geom Geometry) IsRing() bool {
     return val != 0
 }
 
+// Attempt to make an invalid geometry valid without losing vertices.
+func (geom Geometry) MakeValid() Geometry {
+    newGeom := C.OGR_G_MakeValid(geom.cval)
+	return Geometry{newGeom}
+}
+
 // Polygonize a set of sparse edges
 func (geom Geometry) Polygonize() Geometry {
     newGeom := C.OGR_G_Polygonize(geom.cval)
