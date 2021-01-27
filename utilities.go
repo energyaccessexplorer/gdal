@@ -170,3 +170,27 @@ func Rasterize(dstDS string, sourceDS Dataset, options []string) (Dataset, error
 	return Dataset{ds}, nil
 
 }
+
+func RasterizeOverwrite(dstDS Dataset, sourceDS Dataset, options []string) (Dataset, error) {
+	length := len(options)
+	opts := make([]*C.char, length+1)
+	for i := 0; i < length; i++ {
+		opts[i] = C.CString(options[i])
+		defer C.free(unsafe.Pointer(opts[i]))
+	}
+	opts[length] = (*C.char)(unsafe.Pointer(nil))
+	rasterizeopts := C.GDALRasterizeOptionsNew(
+		(**C.char)(unsafe.Pointer(&opts[0])),
+		(*C.GDALRasterizeOptionsForBinary)(unsafe.Pointer(nil)))
+	defer C.GDALRasterizeOptionsFree(rasterizeopts)
+
+	var cerr C.int
+
+	ds := C.GDALRasterize(nil, dstDS.cval,
+		sourceDS.cval,
+		rasterizeopts, &cerr)
+	if cerr != 0 {
+		return Dataset{}, fmt.Errorf("rasterize failed with code %d", cerr)
+	}
+	return Dataset{ds}, nil
+}
