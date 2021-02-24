@@ -17,8 +17,6 @@ import (
 	"unsafe"
 )
 
-var _ = fmt.Println
-
 func init() {
 	C.GDALAllRegister()
 }
@@ -359,9 +357,9 @@ func goGDALProgressFuncProxyA(complete C.double, message *C.char, data unsafe.Po
 	)
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      Registration/driver related.                                    */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 const (
 	DMD_LONGNAME           = string(C.GDAL_DMD_LONGNAME)
@@ -623,9 +621,9 @@ func (driver Driver) LongName() string {
 	return C.GoString(C.GDALGetDriverLongName(cDriver))
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      GDAL_GCP                                                        */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Unimplemented: InitGCPs
 // Unimplemented: DeinitGCPs
@@ -633,9 +631,9 @@ func (driver Driver) LongName() string {
 // Unimplemented: GCPsToGeoTransform
 // Unimplemented: ApplyGeoTransform
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      major objects (dataset, and, driver, drivermanager).            */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Fetch object description
 func (object MajorObject) Description() string {
@@ -778,9 +776,9 @@ func (object *RasterBand) MetadataItem(name, domain string) string {
 	)
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      GDALDataset class ... normally this represents one file.        */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Get the driver to which this dataset relates
 func (dataset Dataset) Driver() Driver {
@@ -1114,9 +1112,9 @@ func (sourceDataset Dataset) CopyWholeRaster(
 	).Err()
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      GDALRasterBand ... one band/channel in a dataset.               */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Fetch the pixel data type for this band
 func (rasterBand RasterBand) RasterDataType() DataType {
@@ -1550,17 +1548,17 @@ func (sourceRaster RasterBand) RasterBandCopyWholeRaster(
 // Generate downsampled overviews
 // Unimplemented: RegenerateOverviews
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*     GDALAsyncReader                                                  */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Unimplemented: GetNextUpdatedRegion
 // Unimplemented: LockBuffer
 // Unimplemented: UnlockBuffer
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      Color tables.                                                   */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Construct a new color table
 func CreateColorTable(interp PaletteInterp) ColorTable {
@@ -1609,9 +1607,9 @@ func (ct ColorTable) CreateColorRamp(start, end int, startColor, endColor ColorE
 	C.GDALCreateColorRamp(ct.cval, C.int(start), &startColor.cval, C.int(end), &endColor.cval)
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      Raster Attribute Table                                          */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 type RATFieldType int
 
@@ -1770,9 +1768,9 @@ func (rat RasterAttributeTable) RowOfValue(val float64) (int, bool) {
 	return int(row), row != -1
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      GDAL Cache Management                                           */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // Set maximum cache memory
 func SetCacheMax(bytes int) {
@@ -1797,9 +1795,9 @@ func FlushCacheBlock() bool {
 	return flushed != 0
 }
 
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 /*      GDAL VSI Virtual File System                                    */
-/* ==================================================================== */
+/* -------------------------------------------------------------------- */
 
 // List VSI files
 func VSIReadDirRecursive(filename string) []string {

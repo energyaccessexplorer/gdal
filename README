@@ -16,14 +16,10 @@ Installation
 Compatibility
 -------------
 
-This software has been tested most recently on Ubuntu 18.10, GDAL version 2.3.2.
+This software has been tested most recently on GDAL version 3.0.
 
 -------------
-Examples
--------------
-
--------------
-Status (3/08/2019)
+Status February 2021
 -------------
 
 The majority of GDAL functionality exposed by the C API is available, as well as much of the OGR API.
