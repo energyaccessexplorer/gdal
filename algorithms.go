@@ -12,15 +12,8 @@ package gdal
 import "C"
 import (
 	"errors"
-	"fmt"
 	"unsafe"
 )
-
-var _ = fmt.Println
-
-/* --------------------------------------------- */
-/* Misc functions                                */
-/* --------------------------------------------- */
 
 // Compute optimal PCT for RGB image
 func ComputeMedianCutPCT(
@@ -87,18 +80,10 @@ func (src RasterBand) ComputeProximity(
 		progress, data,
 	}
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALComputeProximity(
 		src.cval,
 		dest.cval,
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
@@ -117,21 +102,13 @@ func (src RasterBand) FillNoData(
 		progress, data,
 	}
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALFillNodata(
 		src.cval,
 		mask.cval,
 		C.double(distance),
 		0,
 		C.int(iterations),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
@@ -150,20 +127,12 @@ func (src RasterBand) Polygonize(
 		progress, data,
 	}
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALPolygonize(
 		src.cval,
 		mask.cval,
 		layer.cval,
 		C.int(fieldIndex),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
@@ -182,20 +151,12 @@ func (src RasterBand) FPolygonize(
 		progress, data,
 	}
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALFPolygonize(
 		src.cval,
 		mask.cval,
 		layer.cval,
 		C.int(fieldIndex),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
@@ -213,21 +174,13 @@ func (src RasterBand) SieveFilter(
 		progress, data,
 	}
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALSieveFilter(
 		src.cval,
 		mask.cval,
 		dest.cval,
 		C.int(threshold),
 		C.int(connectedness),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
