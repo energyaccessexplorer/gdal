@@ -61,8 +61,12 @@ func Warp(dstDS string, sourceDS []Dataset, options []string) (Dataset, error) {
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("warp failed with code %d", cerr)
 	}
-	return Dataset{ds}, nil
 
+	if ds == nil {
+		return Dataset{}, fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
+	}
+
+	return Dataset{ds}, nil
 }
 
 func Translate(dstDS string, sourceDS Dataset, options []string) (Dataset, error) {
@@ -132,8 +136,12 @@ func VectorTranslate(dstDS string, sourceDS []Dataset, options []string) (Datase
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("vector translate failed with code %d", cerr)
 	}
-	return Dataset{ds}, nil
 
+	if ds == nil {
+		return Dataset{}, fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
+	}
+
+	return Dataset{ds}, nil
 }
 
 func Rasterize(dstDS string, sourceDS Dataset, options []string) (Dataset, error) {
@@ -164,6 +172,11 @@ func Rasterize(dstDS string, sourceDS Dataset, options []string) (Dataset, error
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("rasterize failed with code %d", cerr)
 	}
+
+	if ds == nil {
+		return Dataset{}, fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
+	}
+
 	return Dataset{ds}, nil
 
 }
@@ -189,5 +202,10 @@ func RasterizeOverwrite(dstDS Dataset, sourceDS Dataset, options []string) (Data
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("rasterize failed with code %d", cerr)
 	}
+
+	if ds == nil {
+		return Dataset{}, fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
+	}
+
 	return Dataset{ds}, nil
 }
