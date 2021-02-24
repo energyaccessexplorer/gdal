@@ -483,7 +483,7 @@ func Open(filename string, access Access) (Dataset, error) {
 // Open an existing dataset
 func OpenEx(filename string, flags OpenFlag, allowedDrivers []string,
 	openOptions []string, siblingFiles []string) (Dataset, error) {
-	C.CPLSetConfigOption(C.CString("SHAPE_RESTORE_SHX"), C.CString("YES"));
+	C.CPLSetConfigOption(C.CString("SHAPE_RESTORE_SHX"), C.CString("YES"))
 
 	cFilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cFilename))
