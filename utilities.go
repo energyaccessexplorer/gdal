@@ -15,13 +15,9 @@ import (
 	"unsafe"
 )
 
-var _ = fmt.Println
-
 /* --------------------------------------------- */
 /* Command line utility wrapper functions        */
 /* --------------------------------------------- */
-
-// gdalwarp
 
 func stringArrayContains(array []string, needle string) bool {
 	for _, s := range array {
@@ -132,6 +128,7 @@ func VectorTranslate(dstDS string, sourceDS []Dataset, options []string) (Datase
 		C.int(len(sourceDS)),
 		(*C.GDALDatasetH)(unsafe.Pointer(&srcDS[0])),
 		translateopts, &cerr)
+
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("vector translate failed with code %d", cerr)
 	}

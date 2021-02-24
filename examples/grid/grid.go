@@ -94,7 +94,6 @@ func main() {
 		}
 	}
 
-	fmt.Println("Calling gdal.GridCreate")
 	data, err := gdal.GridCreate(
 		gdal.GA_InverseDistancetoAPower,
 		gdal.GridInverseDistanceToAPowerOptions{Power: 2},

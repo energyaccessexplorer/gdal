@@ -2,7 +2,6 @@ package gdal
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"math"
 	"strconv"
@@ -61,7 +60,6 @@ func TestGridCreate(t *testing.T) {
 		}
 	}
 
-	fmt.Println("Calling gdal.GridCreate")
 	data, err := GridCreate(
 		GA_Linear,
 		GridLinearOptions{Radius: -1, NoDataValue: 0},

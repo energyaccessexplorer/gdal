@@ -16,5 +16,3 @@
 GDALProgressFunc goGDALProgressFuncProxyB();
 
 #endif // GO_GDAL_H_
-
-

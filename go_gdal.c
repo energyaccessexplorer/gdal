@@ -7,11 +7,8 @@
 
 #include <cpl_conv.h>
 
-static int goGDALProgressFuncProxyB_(
-	double complete, 
-	const char *message, 
-	void *progressArg
-) {
+static int
+goGDALProgressFuncProxyB_(double complete, const char *message, void *progressArg) {
 	GoInterface* args = (GoInterface*)progressArg;
 	int returnVal = goGDALProgressFuncProxyA(complete, (char*)message, args);
 	return (int)returnVal;
@@ -20,5 +17,3 @@ static int goGDALProgressFuncProxyB_(
 GDALProgressFunc goGDALProgressFuncProxyB() {
 	return goGDALProgressFuncProxyB_;
 }
-
-

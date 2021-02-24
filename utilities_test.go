@@ -14,16 +14,17 @@ func TestVectorTranslate(t *testing.T) {
 
 	dstDS, err := VectorTranslate("/tmp/test4326.geojson", []Dataset{srcDS}, opts)
 	if err != nil {
-		t.Errorf("Warp: %v", err)
+		t.Errorf("Vector translate: %v", err)
 	}
 	dstDS.Close()
+
 	dstDS, err = OpenEx("/tmp/test4326.geojson", OFReadOnly|OFVector, []string{"geojson"}, nil, nil)
 	if err != nil {
 		t.Errorf("Open after translate: %v", err)
 	}
 	dstDS.Close()
-
 }
+
 func TestRasterize(t *testing.T) {
 	srcDS, err := OpenEx("testdata/test.shp", OFReadOnly, nil, nil, nil)
 	if err != nil {
@@ -37,12 +38,12 @@ func TestRasterize(t *testing.T) {
 		t.Errorf("Warp: %v", err)
 	}
 	dstDS.Close()
+
 	dstDS, err = Open("/tmp/rasterized.tif", ReadOnly)
 	if err != nil {
 		t.Errorf("Open after vector translate: %v", err)
 	}
 	dstDS.Close()
-
 }
 
 func TestWarp(t *testing.T) {
@@ -60,6 +61,7 @@ func TestWarp(t *testing.T) {
 
 	pngdriver, err := GetDriverByName("PNG")
 	pngdriver.CreateCopy("/tmp/foo.png", dstDS, 0, nil, nil, nil)
+
 	dstDS.Close()
 }
 
