@@ -1417,8 +1417,7 @@ func (layer Layer) SetNextByIndex(index int64) error {
 
 // Fetch a feature by its index
 func (layer Layer) Feature(index int64) Feature {
-	feature := C.OGR_L_GetFeature(layer.cval, C.GIntBig(index))
-	return Feature{feature}
+	return Feature{C.OGR_L_GetFeature(layer.cval, C.GIntBig(index))}
 }
 
 // Rewrite the provided feature
@@ -1438,14 +1437,12 @@ func (layer Layer) Delete(index int64) error {
 
 // Fetch the schema information for this layer
 func (layer Layer) Definition() FeatureDefinition {
-	defn := C.OGR_L_GetLayerDefn(layer.cval)
-	return FeatureDefinition{defn}
+	return FeatureDefinition{C.OGR_L_GetLayerDefn(layer.cval)}
 }
 
 // Fetch the spatial reference system for this layer
 func (layer Layer) SpatialReference() SpatialReference {
-	sr := C.OGR_L_GetSpatialRef(layer.cval)
-	return SpatialReference{sr}
+	return SpatialReference{C.OGR_L_GetSpatialRef(layer.cval)}
 }
 
 // Fetch the feature count for this layer
@@ -1515,40 +1512,22 @@ func (layer Layer) Sync() error {
 
 // Fetch the name of the FID column
 func (layer Layer) FIDColumn() string {
-	name := C.OGR_L_GetFIDColumn(layer.cval)
-	return C.GoString(name)
+	return C.GoString(C.OGR_L_GetFIDColumn(layer.cval))
 }
 
 // Fetch the name of the geometry column
 func (layer Layer) GeometryColumn() string {
-	name := C.OGR_L_GetGeometryColumn(layer.cval)
-	return C.GoString(name)
+	return C.GoString(C.OGR_L_GetGeometryColumn(layer.cval))
 }
 
 // Set which fields can be ignored when retrieving features from the layer
 func (layer Layer) SetIgnoredFields(names []string) error {
-	length := len(names)
-	cNames := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cNames[i] = C.CString(names[i])
-		defer C.free(unsafe.Pointer(cNames[i]))
-	}
-	cNames[length] = (*C.char)(unsafe.Pointer(nil))
-
-	return C.OGR_L_SetIgnoredFields(layer.cval, (**C.char)(unsafe.Pointer(&cNames[0]))).Err()
+	return C.OGR_L_SetIgnoredFields(layer.cval, COptions(names)).Err()
 }
 
 // Return the intersection of two layers
-func (layer Layer) Intersection(method Layer, result Layer, options []string) (err error) {
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	return C.OGR_L_Intersection(layer.cval, method.cval, result.cval, (**C.char)(unsafe.Pointer(&opts[0])), nil, nil).Err()
+func (layer Layer) Intersection(method Layer, result Layer, options []string) error {
+	return C.OGR_L_Intersection(layer.cval, method.cval, result.cval, COptions(options), nil, nil).Err()
 }
 
 // Return the union of two layers
@@ -1569,15 +1548,7 @@ func (layer Layer) Intersection(method Layer, result Layer, options []string) (e
 
 // Clip off areas that are not covered by the provided layer
 func (layer Layer) Clip(method Layer, result Layer, options []string) error {
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	return C.OGR_L_Clip(layer.cval, method.cval, result.cval, (**C.char)(unsafe.Pointer(&opts[0])), nil, nil).Err()
+	return C.OGR_L_Clip(layer.cval, method.cval, result.cval, COptions(options), nil, nil).Err()
 }
 
 // Remove areas that are covered by the provided layer
