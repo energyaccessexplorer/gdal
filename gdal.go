@@ -384,20 +384,12 @@ func (driver Driver) Create(
 	name := C.CString(filename)
 	defer C.free(unsafe.Pointer(name))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	h := C.GDALCreate(
 		driver.cval,
 		name,
 		C.int(xSize), C.int(ySize), C.int(bands),
 		C.GDALDataType(dataType),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 	)
 	return Dataset{h}
 }
@@ -414,14 +406,6 @@ func (driver Driver) CreateCopy(
 	name := C.CString(filename)
 	defer C.free(unsafe.Pointer(name))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	var h C.GDALDatasetH
 
 	if progress == nil {
@@ -429,7 +413,7 @@ func (driver Driver) CreateCopy(
 			driver.cval, name,
 			sourceDataset.cval,
 			C.int(strict),
-			(**C.char)(unsafe.Pointer(&opts[0])),
+			COptions(options),
 			nil,
 			nil,
 		)
@@ -440,7 +424,8 @@ func (driver Driver) CreateCopy(
 		h = C.GDALCreateCopy(
 			driver.cval, name,
 			sourceDataset.cval,
-			C.int(strict), (**C.char)(unsafe.Pointer(&opts[0])),
+			C.int(strict),
+			COptions(options),
 			C.goGDALProgressFuncProxyB(),
 			unsafe.Pointer(arg),
 		)
@@ -746,6 +731,7 @@ func (object *Driver) MetadataItem(name, domain string) string {
 		),
 	)
 }
+
 func (object *Dataset) MetadataItem(name, domain string) string {
 	c_name := C.CString(name)
 	defer C.free(unsafe.Pointer(c_name))
@@ -835,18 +821,11 @@ func (dataset Dataset) RasterBand(band int) RasterBand {
 
 // Add a band to a dataset
 func (dataset Dataset) AddBand(dataType DataType, options []string) error {
-	length := len(options)
-	cOptions := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cOptions[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(cOptions[i]))
-	}
-	cOptions[length] = (*C.char)(unsafe.Pointer(nil))
 
 	return C.GDALAddBand(
 		dataset.cval,
 		C.GDALDataType(dataType),
-		(**C.char)(unsafe.Pointer(&cOptions[0])),
+		COptions(options),
 	).Err()
 }
 
@@ -949,14 +928,6 @@ func (dataset Dataset) AdviseRead(
 	bandMap []int,
 	options []string,
 ) error {
-	length := len(options)
-	cOptions := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cOptions[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(cOptions[i]))
-	}
-	cOptions[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALDatasetAdviseRead(
 		dataset.cval,
 		C.int(xOff), C.int(yOff), C.int(xSize), C.int(ySize),
@@ -964,7 +935,7 @@ func (dataset Dataset) AdviseRead(
 		C.GDALDataType(dataType),
 		C.int(bandCount),
 		(*C.int)(unsafe.Pointer(&IntSliceToCInt(bandMap)[0])),
-		(**C.char)(unsafe.Pointer(&cOptions[0])),
+		COptions(options),
 	).Err()
 }
 
@@ -1095,18 +1066,10 @@ func (sourceDataset Dataset) CopyWholeRaster(
 ) error {
 	arg := &goGDALProgressFuncProxyArgs{progress, data}
 
-	length := len(options)
-	cOptions := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cOptions[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(cOptions[i]))
-	}
-	cOptions[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALDatasetCopyWholeRaster(
 		sourceDataset.cval,
 		destDataset.cval,
-		(**C.char)(unsafe.Pointer(&cOptions[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()
@@ -1135,19 +1098,11 @@ func (rasterBand RasterBand) AdviseRead(
 	dataType DataType,
 	options []string,
 ) error {
-	length := len(options)
-	cOptions := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cOptions[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(cOptions[i]))
-	}
-	cOptions[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALRasterAdviseRead(
 		rasterBand.cval,
 		C.int(xOff), C.int(yOff), C.int(xSize), C.int(ySize), C.int(bufXSize), C.int(bufYSize),
 		C.GDALDataType(dataType),
-		(**C.char)(unsafe.Pointer(&cOptions[0])),
+		COptions(options),
 	).Err()
 }
 
@@ -1528,18 +1483,10 @@ func (sourceRaster RasterBand) RasterBandCopyWholeRaster(
 ) error {
 	arg := &goGDALProgressFuncProxyArgs{progress, data}
 
-	length := len(options)
-	cOptions := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		cOptions[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(cOptions[i]))
-	}
-	cOptions[length] = (*C.char)(unsafe.Pointer(nil))
-
 	return C.GDALRasterBandCopyWholeRaster(
 		sourceRaster.cval,
 		destRaster.cval,
-		(**C.char)(unsafe.Pointer(&cOptions[0])),
+		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
 	).Err()

@@ -382,15 +382,7 @@ func (geom Geometry) ToGML() string {
 
 // Convert a geometry to GML format with options
 func (geom Geometry) ToGML_Ex(options []string) string {
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	val := C.OGR_G_ExportToGMLEx(geom.cval, (**C.char)(unsafe.Pointer(&opts[0])))
+	val := C.OGR_G_ExportToGMLEx(geom.cval, COptions(options))
 	return C.GoString(val)
 }
 
@@ -410,15 +402,7 @@ func (geom Geometry) ToJSON() string {
 
 // Convert a geometry to JSON format with options
 func (geom Geometry) ToJSON_ex(options []string) string {
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	val := C.OGR_G_ExportToJsonEx(geom.cval, (**C.char)(unsafe.Pointer(&opts[0])))
+	val := C.OGR_G_ExportToJsonEx(geom.cval, COptions(options))
 	return C.GoString(val)
 }
 
@@ -1648,20 +1632,12 @@ func (ds DataSource) CreateLayer(
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	layer := C.OGR_DS_CreateLayer(
 		ds.cval,
 		cName,
 		sr.cval,
 		C.OGRwkbGeometryType(geomType),
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 	)
 	return Layer{layer}
 }
@@ -1675,19 +1651,11 @@ func (ds DataSource) CopyLayer(
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
 	layer := C.OGR_DS_CopyLayer(
 		ds.cval,
 		source.cval,
 		cName,
-		(**C.char)(unsafe.Pointer(&opts[0])),
+		COptions(options),
 	)
 	return Layer{layer}
 }
@@ -1756,15 +1724,7 @@ func (driver OGRDriver) Create(name string, options []string) (newDS DataSource,
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	ds := C.OGR_Dr_CreateDataSource(driver.cval, cName, (**C.char)(unsafe.Pointer(&opts[0])))
+	ds := C.OGR_Dr_CreateDataSource(driver.cval, cName, COptions(options))
 	return DataSource{ds}, ds != nil
 }
 
@@ -1773,15 +1733,7 @@ func (driver OGRDriver) Copy(source DataSource, name string, options []string) (
 	cName := C.CString(name)
 	defer C.free(unsafe.Pointer(cName))
 
-	length := len(options)
-	opts := make([]*C.char, length+1)
-	for i := 0; i < length; i++ {
-		opts[i] = C.CString(options[i])
-		defer C.free(unsafe.Pointer(opts[i]))
-	}
-	opts[length] = (*C.char)(unsafe.Pointer(nil))
-
-	ds := C.OGR_Dr_CopyDataSource(driver.cval, source.cval, cName, (**C.char)(unsafe.Pointer(&opts[0])))
+	ds := C.OGR_Dr_CopyDataSource(driver.cval, source.cval, cName, COptions(options))
 	return DataSource{ds}, ds != nil
 }
 
