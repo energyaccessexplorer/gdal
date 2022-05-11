@@ -150,15 +150,15 @@ func RasterizeOverwrite(dstDS Dataset, sourceDS Dataset, options []string) (Data
 
 	var cerr C.int
 
-	ds := C.GDALRasterize(nil, dstDS.cval, sourceDS.cval, rasterizeopts, &cerr)
+	x := C.GDALRasterize(nil, dstDS.cval, sourceDS.cval, rasterizeopts, &cerr)
 
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("rasterize failed with code %d", cerr)
 	}
 
-	if ds == nil {
+	if x == nil {
 		return Dataset{}, fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
 	}
 
-	return Dataset{ds}, nil
+	return dstDS, nil
 }
