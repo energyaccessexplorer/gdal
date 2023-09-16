@@ -75,13 +75,13 @@ func (src RasterBand) ComputeProximity(
 		progress, data,
 	}
 
-	return C.GDALComputeProximity(
+	return CPLErr(C.GDALComputeProximity(
 		src.cval,
 		dest.cval,
 		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 }
 
 // Fill selected raster regions by interpolation from the edges
@@ -97,7 +97,7 @@ func (src RasterBand) FillNoData(
 		progress, data,
 	}
 
-	return C.GDALFillNodata(
+	return CPLErr(C.GDALFillNodata(
 		src.cval,
 		mask.cval,
 		C.double(distance),
@@ -106,7 +106,7 @@ func (src RasterBand) FillNoData(
 		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 }
 
 // Create polygon coverage from raster data using an integer buffer
@@ -122,7 +122,7 @@ func (src RasterBand) Polygonize(
 		progress, data,
 	}
 
-	return C.GDALPolygonize(
+	return CPLErr(C.GDALPolygonize(
 		src.cval,
 		mask.cval,
 		layer.cval,
@@ -130,7 +130,7 @@ func (src RasterBand) Polygonize(
 		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 }
 
 // Create polygon coverage from raster data using a floating point buffer
@@ -146,7 +146,7 @@ func (src RasterBand) FPolygonize(
 		progress, data,
 	}
 
-	return C.GDALFPolygonize(
+	return CPLErr(C.GDALFPolygonize(
 		src.cval,
 		mask.cval,
 		layer.cval,
@@ -154,7 +154,7 @@ func (src RasterBand) FPolygonize(
 		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 }
 
 // Removes small raster polygons
@@ -169,7 +169,7 @@ func (src RasterBand) SieveFilter(
 		progress, data,
 	}
 
-	return C.GDALSieveFilter(
+	return CPLErr(C.GDALSieveFilter(
 		src.cval,
 		mask.cval,
 		dest.cval,
@@ -178,7 +178,7 @@ func (src RasterBand) SieveFilter(
 		COptions(options),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 }
 
 /* --------------------------------------------- */
@@ -468,7 +468,7 @@ func GridCreate(
 
 	buffer := make([]float64, nX*nY)
 	arg := &goGDALProgressFuncProxyArgs{progress, data}
-	err := C.GDALGridCreate(
+	err := CPLErr(C.GDALGridCreate(
 		C.GDALGridAlgorithm(algorithm),
 		poptions,
 		C.uint(uint(len(x))),
@@ -485,7 +485,7 @@ func GridCreate(
 		unsafe.Pointer(&buffer[0]),
 		C.goGDALProgressFuncProxyB(),
 		unsafe.Pointer(arg),
-	).Err()
+	))
 	return buffer, err
 }
 
