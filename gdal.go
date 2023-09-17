@@ -28,28 +28,128 @@ const (
 	VERSION_NUM   = int(C.GDAL_VERSION_NUM)
 	RELEASE_DATE  = int(C.GDAL_RELEASE_DATE)
 	RELEASE_NAME  = string(C.GDAL_RELEASE_NAME)
+
+	GDT_Unknown                             = int(C.GDT_Unknown)
+	GDT_Byte                                = int(C.GDT_Byte)
+	GDT_UInt16                              = int(C.GDT_UInt16)
+	GDT_Int16                               = int(C.GDT_Int16)
+	GDT_UInt32                              = int(C.GDT_UInt32)
+	GDT_Int32                               = int(C.GDT_Int32)
+	GDT_Float32                             = int(C.GDT_Float32)
+	GDT_Float64                             = int(C.GDT_Float64)
+	GDT_CInt16                              = int(C.GDT_CInt16)
+	GDT_CInt32                              = int(C.GDT_CInt32)
+	GDT_CFloat32                            = int(C.GDT_CFloat32)
+	GDT_CFloat64                            = int(C.GDT_CFloat64)
+	GDT_TypeCount                           = int(C.GDT_TypeCount)
+	GA_ReadOnly                             = int(C.GA_ReadOnly)
+	GA_Update                               = int(C.GA_Update)
+	GF_Read                                 = int(C.GF_Read)
+	GF_Write                                = int(C.GF_Write)
+	GRIORA_NearestNeighbour                 = int(C.GRIORA_NearestNeighbour)
+	GRIORA_Bilinear                         = int(C.GRIORA_Bilinear)
+	GRIORA_Cubic                            = int(C.GRIORA_Cubic)
+	GRIORA_CubicSpline                      = int(C.GRIORA_CubicSpline)
+	GRIORA_Lanczos                          = int(C.GRIORA_Lanczos)
+	GRIORA_Average                          = int(C.GRIORA_Average)
+	GRIORA_Mode                             = int(C.GRIORA_Mode)
+	GRIORA_Gauss                            = int(C.GRIORA_Gauss)
+	GCI_Undefined                           = int(C.GCI_Undefined)
+	GCI_GrayIndex                           = int(C.GCI_GrayIndex)
+	GCI_PaletteIndex                        = int(C.GCI_PaletteIndex)
+	GCI_RedBand                             = int(C.GCI_RedBand)
+	GCI_GreenBand                           = int(C.GCI_GreenBand)
+	GCI_BlueBand                            = int(C.GCI_BlueBand)
+	GCI_AlphaBand                           = int(C.GCI_AlphaBand)
+	GCI_HueBand                             = int(C.GCI_HueBand)
+	GCI_SaturationBand                      = int(C.GCI_SaturationBand)
+	GCI_LightnessBand                       = int(C.GCI_LightnessBand)
+	GCI_CyanBand                            = int(C.GCI_CyanBand)
+	GCI_MagentaBand                         = int(C.GCI_MagentaBand)
+	GCI_YellowBand                          = int(C.GCI_YellowBand)
+	GCI_BlackBand                           = int(C.GCI_BlackBand)
+	GCI_YCbCr_YBand                         = int(C.GCI_YCbCr_YBand)
+	GCI_YCbCr_CrBand                        = int(C.GCI_YCbCr_CrBand)
+	GCI_YCbCr_CbBand                        = int(C.GCI_YCbCr_CbBand)
+	GRA_Average                             = int(C.GRA_Average)
+	GRA_Mode                                = int(C.GRA_Mode)
+	GRA_Max                                 = int(C.GRA_Max)
+	GRA_Min                                 = int(C.GRA_Min)
+	GRA_Med                                 = int(C.GRA_Med)
+	GRA_Q1                                  = int(C.GRA_Q1)
+	GRA_Q3                                  = int(C.GRA_Q3)
+	GPI_Gray                                = int(C.GPI_Gray)
+	GPI_RGB                                 = int(C.GPI_RGB)
+	GPI_CMYK                                = int(C.GPI_CMYK)
+	GPI_HLS                                 = int(C.GPI_HLS)
+	CXT_Element                             = int(C.CXT_Element)
+	CXT_Text                                = int(C.CXT_Text)
+	CXT_Attribute                           = int(C.CXT_Attribute)
+	CXT_Comment                             = int(C.CXT_Comment)
+	CXT_Literal                             = int(C.CXT_Literal)
+	CPLE_None                               = int(C.CPLE_None)
+	CPLE_AppDefined                         = int(C.CPLE_AppDefined)
+	CPLE_OutOfMemory                        = int(C.CPLE_OutOfMemory)
+	CPLE_FileIO                             = int(C.CPLE_FileIO)
+	CPLE_OpenFailed                         = int(C.CPLE_OpenFailed)
+	CPLE_IllegalArg                         = int(C.CPLE_IllegalArg)
+	CPLE_NotSupported                       = int(C.CPLE_NotSupported)
+	CPLE_AssertionFailed                    = int(C.CPLE_AssertionFailed)
+	CPLE_NoWriteAccess                      = int(C.CPLE_NoWriteAccess)
+	CPLE_UserInterrupt                      = int(C.CPLE_UserInterrupt)
+	CPLE_ObjectNull                         = int(C.CPLE_ObjectNull)
+	CPLE_HttpResponse                       = int(C.CPLE_HttpResponse)
+	CPLE_AWSBucketNotFound                  = int(C.CPLE_AWSBucketNotFound)
+	CPLE_AWSObjectNotFound                  = int(C.CPLE_AWSObjectNotFound)
+	CPLE_AWSAccessDenied                    = int(C.CPLE_AWSAccessDenied)
+	CPLE_AWSInvalidCredentials              = int(C.CPLE_AWSInvalidCredentials)
+	CPLE_AWSSignatureDoesNotMatch           = int(C.CPLE_AWSSignatureDoesNotMatch)
+	GRTT_THEMATIC                           = int(C.GRTT_THEMATIC)
+	GRTT_ATHEMATIC                          = int(C.GRTT_ATHEMATIC)
+	GMF_ALL_VALID                           = int(C.GMF_ALL_VALID)
+	GMF_PER_DATASET                         = int(C.GMF_PER_DATASET)
+	GMF_ALPHA                               = int(C.GMF_ALPHA)
+	GMF_NODATA                              = int(C.GMF_NODATA)
+	GDAL_DATA_COVERAGE_STATUS_UNIMPLEMENTED = int(C.GDAL_DATA_COVERAGE_STATUS_UNIMPLEMENTED)
+	GDAL_DATA_COVERAGE_STATUS_DATA          = int(C.GDAL_DATA_COVERAGE_STATUS_DATA)
+	GDAL_DATA_COVERAGE_STATUS_EMPTY         = int(C.GDAL_DATA_COVERAGE_STATUS_EMPTY)
+	GARIO_PENDING                           = int(C.GARIO_PENDING)
+	GARIO_UPDATE                            = int(C.GARIO_UPDATE)
+	GARIO_ERROR                             = int(C.GARIO_ERROR)
+	GARIO_COMPLETE                          = int(C.GARIO_COMPLETE)
+	GTO_TIP                                 = int(C.GTO_TIP)
+	GTO_BIT                                 = int(C.GTO_BIT)
+	GTO_BSQ                                 = int(C.GTO_BSQ)
 )
 
 var (
-	ErrDebug   = errors.New("Debug Error")
-	ErrWarning = errors.New("Warning Error")
-	ErrFailure = errors.New("Failure Error")
-	ErrFatal   = errors.New("Fatal Error")
-	ErrIllegal = errors.New("Illegal Error")
+	ErrDebug                   = errors.New("Debug Error")
+	ErrWarning                 = errors.New("Warning Error")
+	ErrFailure                 = errors.New("Failure Error")
+	ErrFatal                   = errors.New("Fatal Error")
+	ErrIllegal                 = errors.New("Illegal Error")
+	ErrNotEnoughData           = errors.New("Not Enough Data")
+	ErrNotEnoughMemory         = errors.New("Not Enough Memory")
+	ErrUnsupportedGeometryType = errors.New("Unsupported Geometry Type")
+	ErrUnsupportedOperation    = errors.New("Unsupported Operation")
+	ErrCorruptData             = errors.New("Corrupt Data")
+	ErrUnsupportedSRS          = errors.New("Unsupported SRS")
+	ErrInvalidHandle           = errors.New("Invalid Handle")
+	ErrNonExistingFeature      = errors.New("Non Existing Feature")
 )
 
 // Error handling.  The following is bare-bones, and needs to be replaced with something more useful.
 func CPLErr(err C.CPLErr) error {
 	switch err {
-	case 0:
+	case C.CE_None:
 		return nil
-	case 1:
+	case C.CE_Debug:
 		return ErrDebug
-	case 2:
+	case C.CE_Warning:
 		return ErrWarning
-	case 3:
+	case C.CE_Failure:
 		return ErrFailure
-	case 4:
+	case C.CE_Fatal:
 		return ErrFailure
 	}
 	return ErrIllegal
@@ -57,16 +157,26 @@ func CPLErr(err C.CPLErr) error {
 
 func OGRErr(err C.OGRErr) error {
 	switch err {
-	case 0:
+	case C.OGRERR_NONE:
 		return nil
-	case 1:
-		return ErrDebug
-	case 2:
-		return ErrWarning
-	case 3:
+	case C.OGRERR_NOT_ENOUGH_DATA:
+		return ErrNotEnoughData
+	case C.OGRERR_NOT_ENOUGH_MEMORY:
+		return ErrNotEnoughMemory
+	case C.OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+		return ErrUnsupportedGeometryType
+	case C.OGRERR_UNSUPPORTED_OPERATION:
+		return ErrUnsupportedOperation
+	case C.OGRERR_CORRUPT_DATA:
+		return ErrCorruptData
+	case C.OGRERR_FAILURE:
 		return ErrFailure
-	case 4:
-		return ErrFailure
+	case C.OGRERR_UNSUPPORTED_SRS:
+		return ErrUnsupportedSRS
+	case C.OGRERR_INVALID_HANDLE:
+		return ErrInvalidHandle
+	case C.OGRERR_NON_EXISTING_FEATURE:
+		return ErrNonExistingFeature
 	}
 	return ErrIllegal
 }
@@ -108,7 +218,7 @@ func (dataType DataType) Union(dataTypeB DataType) DataType {
 	)
 }
 
-//Safe array conversion
+// Safe array conversion
 func IntSliceToCInt(data []int) []C.int {
 	sliceSz := len(data)
 	result := make([]C.int, sliceSz)
@@ -118,7 +228,7 @@ func IntSliceToCInt(data []int) []C.int {
 	return result
 }
 
-//Safe array conversion
+// Safe array conversion
 func CIntSliceToInt(data []C.int) []int {
 	sliceSz := len(data)
 	result := make([]int, sliceSz)
@@ -352,6 +462,25 @@ func goGDALProgressFuncProxyA(complete C.double, message *C.char, data unsafe.Po
 	)
 }
 
+// CPLSetConfigOption
+func CPLSetConfigOption(key, val string) {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+	cVal := C.CString(val)
+	defer C.free(unsafe.Pointer(cVal))
+	C.CPLSetConfigOption(cKey, cVal)
+}
+
+// CPLGetConfigOption
+func CPLGetConfigOption(key, val string) string {
+	cKey := C.CString(key)
+	defer C.free(unsafe.Pointer(cKey))
+
+	cVal := C.CString(val)
+	defer C.free(unsafe.Pointer(cVal))
+	return C.GoString(C.CPLGetConfigOption(cKey, cVal))
+}
+
 /* -------------------------------------------------------------------- */
 /*      Registration/driver related.                                    */
 /* -------------------------------------------------------------------- */
@@ -367,6 +496,14 @@ const (
 	DCAP_CREATE     = string(C.GDAL_DCAP_CREATE)
 	DCAP_CREATECOPY = string(C.GDAL_DCAP_CREATECOPY)
 	DCAP_VIRTUALIO  = string(C.GDAL_DCAP_VIRTUALIO)
+
+	DCAP_OPEN               = string(C.GDAL_DCAP_OPEN)
+	DCAP_RASTER             = string(C.GDAL_DCAP_RASTER)
+	DCAP_VECTOR             = string(C.GDAL_DCAP_VECTOR)
+	DCAP_NOTNULL_FIELDS     = string(C.GDAL_DCAP_NOTNULL_FIELDS)
+	DCAP_DEFAULT_FIELDS     = string(C.GDAL_DCAP_DEFAULT_FIELDS)
+	DCAP_NOTNULL_GEOMFIELDS = string(C.GDAL_DCAP_NOTNULL_GEOMFIELDS)
+	DCAP_UNIQUE_FIELDS      = string(C.GDAL_DCAP_UNIQUE_FIELDS)
 )
 
 // Create a new dataset with this driver.
@@ -647,7 +784,7 @@ func (dataset *Dataset) Metadata(domain string) []string {
 	q := uintptr(unsafe.Pointer(p))
 	for {
 		p = (**C.char)(unsafe.Pointer(q))
-		if p == nil {
+		if p == nil || *p == nil {
 			break
 		}
 		strings = append(strings, C.GoString(*p))
@@ -981,7 +1118,12 @@ func (dataset Dataset) GDALGetGCPCount() int {
 	return int(count)
 }
 
-// Unimplemented: GDALGetGCPProjection
+// Get projection of GCPs
+func (dataset Dataset) GDALGetGCPProjection() string {
+	s := C.GDALGetGCPProjection(dataset.cval)
+	return C.GoString(s)
+}
+
 // Unimplemented: GDALGetGCPs
 // Unimplemented: GDALSetGCPs
 
@@ -1488,7 +1630,55 @@ func (sourceRaster RasterBand) RasterBandCopyWholeRaster(
 }
 
 // Generate downsampled overviews
-// Unimplemented: RegenerateOverviews
+func (sourceRaster RasterBand) RegenerateOverviews(
+	overviewCount int,
+	destRasterBands *RasterBand,
+	resampling string,
+	progress ProgressFunc,
+	data interface{},
+) error {
+	arg := &goGDALProgressFuncProxyArgs{progress, data}
+	cVal := C.CString(resampling)
+	defer C.free(unsafe.Pointer(cVal))
+	return CPLErr(C.GDALRegenerateOverviews(
+		sourceRaster.cval,
+		C.int(overviewCount),
+		&destRasterBands.cval,
+		cVal,
+		C.goGDALProgressFuncProxyB(),
+		unsafe.Pointer(arg),
+	))
+}
+
+func (sourceRaster RasterBand) RegenerateOverview(
+	destRasterBand RasterBand,
+	resampling string,
+	progress ProgressFunc,
+	data interface{},
+) error {
+	cVal := C.CString(resampling)
+	defer C.free(unsafe.Pointer(cVal))
+	if progress == nil {
+		return CPLErr(C.GDALRegenerateOverviews(
+			sourceRaster.cval,
+			C.int(1),
+			&destRasterBand.cval,
+			cVal,
+			nil,
+			nil,
+		))
+	} else {
+		arg := &goGDALProgressFuncProxyArgs{progress, data}
+		return CPLErr(C.GDALRegenerateOverviews(
+			sourceRaster.cval,
+			C.int(1),
+			&destRasterBand.cval,
+			cVal,
+			C.goGDALProgressFuncProxyB(),
+			unsafe.Pointer(arg),
+		))
+	}
+}
 
 /* -------------------------------------------------------------------- */
 /*     GDALAsyncReader                                                  */
@@ -1527,6 +1717,9 @@ func (ct ColorTable) PaletteInterpretation() PaletteInterp {
 
 // Get number of color entries in table
 func (ct ColorTable) EntryCount() int {
+	if ct.cval == nil {
+		return 0
+	}
 	count := C.GDALGetColorEntryCount(ct.cval)
 	return int(count)
 }
@@ -1788,4 +1981,33 @@ func VSIFReadL(nSize, nCount int, file VSILFILE) []byte {
 	C.VSIFReadL(p, C.size_t(nSize), C.size_t(nCount), file.cval)
 
 	return data
+}
+
+func ReprojectImage(
+	srcDs, destDs Dataset,
+	srcWkt, destWkt string,
+	alg ResampleAlg,
+	memoryLimit, maxerror float64,
+	progress ProgressFunc,
+	data unsafe.Pointer,
+	options []string,
+) error {
+	length := len(options)
+	cOptions := make([]*C.char, length+1)
+	for i := 0; i < length; i++ {
+		cOptions[i] = C.CString(options[i])
+		defer C.free(unsafe.Pointer(cOptions[i]))
+	}
+	return CPLErr(C.GDALReprojectImage(
+		srcDs.cval,
+		C.CString(srcWkt),
+		destDs.cval,
+		C.CString(destWkt),
+		C.GDALResampleAlg(alg),
+		C.double(memoryLimit),
+		C.double(maxerror),
+		nil,
+		unsafe.Pointer(nil),
+		nil,
+	))
 }

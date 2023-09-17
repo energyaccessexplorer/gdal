@@ -254,7 +254,6 @@ func (src RasterBand) SieveFilter(
 // GridAlgorithm represents Grid Algorithm code
 type GridAlgorithm int
 
-//
 const (
 	GA_InverseDistancetoAPower                = GridAlgorithm(C.GGA_InverseDistanceToAPower)
 	GA_MovingAverage                          = GridAlgorithm(C.GGA_MovingAverage)
@@ -271,6 +270,8 @@ const (
 
 // GridLinearOptions: Linear method control options.
 type GridLinearOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GDALGridLinearOptions)
+	SizeOfStructure uintptr
 	// Radius: in case the point to be interpolated does not fit into a triangle of the Delaunay triangulation,
 	// use that maximum distance to search a nearest neighbour, or use nodata otherwise. If set to -1, the search
 	// distance is infinite. If set to 0, nodata value will be always used.
@@ -281,6 +282,8 @@ type GridLinearOptions struct {
 
 // GridInverseDistanceToAPowerOptions: Inverse distance to a power method control options.
 type GridInverseDistanceToAPowerOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GridInverseDistanceToAPowerOptions)
+	SizeOfStructure uintptr
 	// Power: Weighting power
 	Power float64
 	// Smoothing: Smoothing parameter
@@ -309,6 +312,8 @@ type GridInverseDistanceToAPowerOptions struct {
 // GridInverseDistanceToAPowerNearestNeighborOptions: Inverse distance to a power, with nearest neighbour search,
 // control options
 type GridInverseDistanceToAPowerNearestNeighborOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GridInverseDistanceToAPowerNearestNeighborOptions)
+	SizeOfStructure uintptr
 	// Power: Weighting power
 	Power float64
 	// Radius: The radius of search circle
@@ -328,6 +333,8 @@ type GridInverseDistanceToAPowerNearestNeighborOptions struct {
 
 // GridMovingAverageOptions: Moving average method control options
 type GridMovingAverageOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GridMovingAverageOptions)
+	SizeOfStructure uintptr
 	// Radius1: The first radius (X axis if rotation angle is 0) of search ellipse.
 	Radius1 float64
 	// Radius2: The second radius (Y axis if rotation angle is 0) of search ellipse.
@@ -343,6 +350,8 @@ type GridMovingAverageOptions struct {
 
 // GridNearestNeighborOptions: Nearest neighbor method control options.
 type GridNearestNeighborOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GridNearestNeighborOptions)
+	SizeOfStructure uintptr
 	// Radius1: The first radius (X axis if rotation angle is 0) of search ellipse.
 	Radius1 float64
 	// Radius2: The second radius (Y axis if rotation angle is 0) of search ellipse.
@@ -355,6 +364,8 @@ type GridNearestNeighborOptions struct {
 
 // GridDataMetricsOptions: Data metrics method control options
 type GridDataMetricsOptions struct {
+	// SizeOfStructure: Added in GDAL 3.6 to detect potential ABI issues. Should be set to sizeof(GridDataMetricsOptions)
+	SizeOfStructure uintptr
 	// Radius1: The first radius (X axis if rotation angle is 0) of search ellipse.
 	Radius1 float64
 	// Radius2: The second radius (Y axis if rotation angle is 0) of search ellipse.
@@ -395,6 +406,7 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridInverseDistanceToAPowerOptions{
+			nSizeOfStructure:  C.size_t(unsafe.Sizeof(soptions)),
 			dfPower:           C.double(soptions.Power),
 			dfSmoothing:       C.double(soptions.Smoothing),
 			dfAnisotropyRatio: C.double(soptions.AnisotropyRatio),
@@ -412,12 +424,13 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridInverseDistanceToAPowerNearestNeighborOptions{
-			dfPower:       C.double(soptions.Power),
-			dfRadius:      C.double(soptions.Radius),
-			dfSmoothing:   C.double(soptions.Smoothing),
-			nMaxPoints:    C.uint(soptions.MaxPoints),
-			nMinPoints:    C.uint(soptions.MinPoints),
-			dfNoDataValue: C.double(soptions.NoDataValue),
+			nSizeOfStructure: C.size_t(unsafe.Sizeof(soptions)),
+			dfPower:          C.double(soptions.Power),
+			dfRadius:         C.double(soptions.Radius),
+			dfSmoothing:      C.double(soptions.Smoothing),
+			nMaxPoints:       C.uint(soptions.MaxPoints),
+			nMinPoints:       C.uint(soptions.MinPoints),
+			dfNoDataValue:    C.double(soptions.NoDataValue),
 		})
 	case GA_MovingAverage:
 		soptions, ok := options.(GridMovingAverageOptions)
@@ -425,11 +438,12 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridMovingAverageOptions{
-			dfRadius1:     C.double(soptions.Radius1),
-			dfRadius2:     C.double(soptions.Radius2),
-			dfAngle:       C.double(soptions.Angle),
-			nMinPoints:    C.uint(soptions.MinPoints),
-			dfNoDataValue: C.double(soptions.NoDataValue),
+			nSizeOfStructure: C.size_t(unsafe.Sizeof(soptions)),
+			dfRadius1:        C.double(soptions.Radius1),
+			dfRadius2:        C.double(soptions.Radius2),
+			dfAngle:          C.double(soptions.Angle),
+			nMinPoints:       C.uint(soptions.MinPoints),
+			dfNoDataValue:    C.double(soptions.NoDataValue),
 		})
 	case GA_NearestNeighbor:
 		soptions, ok := options.(GridNearestNeighborOptions)
@@ -437,10 +451,11 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridNearestNeighborOptions{
-			dfRadius1:     C.double(soptions.Radius1),
-			dfRadius2:     C.double(soptions.Radius2),
-			dfAngle:       C.double(soptions.Angle),
-			dfNoDataValue: C.double(soptions.NoDataValue),
+			nSizeOfStructure: C.size_t(unsafe.Sizeof(soptions)),
+			dfRadius1:        C.double(soptions.Radius1),
+			dfRadius2:        C.double(soptions.Radius2),
+			dfAngle:          C.double(soptions.Angle),
+			dfNoDataValue:    C.double(soptions.NoDataValue),
 		})
 	case GA_MetricMinimum, GA_MetricMaximum, GA_MetricCount, GA_MetricRange,
 		GA_MetricAverageDistance, GA_MetricAverageDistancePts:
@@ -449,11 +464,12 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridDataMetricsOptions{
-			dfRadius1:     C.double(soptions.Radius1),
-			dfRadius2:     C.double(soptions.Radius2),
-			dfAngle:       C.double(soptions.Angle),
-			nMinPoints:    C.uint(soptions.MinPoints),
-			dfNoDataValue: C.double(soptions.NoDataValue),
+			nSizeOfStructure: C.size_t(unsafe.Sizeof(soptions)),
+			dfRadius1:        C.double(soptions.Radius1),
+			dfRadius2:        C.double(soptions.Radius2),
+			dfAngle:          C.double(soptions.Angle),
+			nMinPoints:       C.uint(soptions.MinPoints),
+			dfNoDataValue:    C.double(soptions.NoDataValue),
 		})
 	case GA_Linear:
 		soptions, ok := options.(GridLinearOptions)
@@ -461,8 +477,9 @@ func GridCreate(
 			return nil, errInvalidOptionsTypeWasPassed
 		}
 		poptions = unsafe.Pointer(&C.GDALGridLinearOptions{
-			dfRadius:      C.double(soptions.Radius),
-			dfNoDataValue: C.double(soptions.NoDataValue),
+			nSizeOfStructure: C.size_t(unsafe.Sizeof(soptions)),
+			dfRadius:         C.double(soptions.Radius),
+			dfNoDataValue:    C.double(soptions.NoDataValue),
 		})
 	}
 

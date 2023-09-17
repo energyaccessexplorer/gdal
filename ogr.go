@@ -157,6 +157,136 @@ func (env Envelope) Contains(other Envelope) bool {
 }
 
 /* -------------------------------------------------------------------- */
+/*      Envelope3D functions                                              */
+/* -------------------------------------------------------------------- */
+
+type Envelope3D struct {
+	cval C.OGREnvelope3D
+}
+
+func (env Envelope3D) MinX() float64 {
+	return float64(env.cval.MinX)
+}
+
+func (env Envelope3D) MaxX() float64 {
+	return float64(env.cval.MaxX)
+}
+
+func (env Envelope3D) MinY() float64 {
+	return float64(env.cval.MinY)
+}
+
+func (env Envelope3D) MaxY() float64 {
+	return float64(env.cval.MaxY)
+}
+
+func (env Envelope3D) MinZ() float64 {
+	return float64(env.cval.MinZ)
+}
+
+func (env Envelope3D) MaxZ() float64 {
+	return float64(env.cval.MaxZ)
+}
+
+func (env *Envelope3D) SetMinX(val float64) {
+	env.cval.MinX = C.double(val)
+}
+
+func (env *Envelope3D) SetMaxX(val float64) {
+	env.cval.MaxX = C.double(val)
+}
+
+func (env *Envelope3D) SetMinY(val float64) {
+	env.cval.MinY = C.double(val)
+}
+
+func (env *Envelope3D) SetMaxY(val float64) {
+	env.cval.MaxY = C.double(val)
+}
+
+func (env *Envelope3D) SetMinZ(val float64) {
+	env.cval.MinZ = C.double(val)
+}
+
+func (env *Envelope3D) SetMaxZ(val float64) {
+	env.cval.MaxZ = C.double(val)
+}
+
+func (env Envelope3D) IsInit() bool {
+	return env.cval.MinX != 0 || env.cval.MinY != 0 || env.cval.MinZ != 0 || env.cval.MaxX != 0 || env.cval.MaxY != 0 || env.cval.MaxZ != 0
+}
+
+// Return the union of this envelope3D with another one
+func (env Envelope3D) Union(other Envelope3D) Envelope3D {
+	if env.IsInit() {
+		env.cval.MinX = min(env.cval.MinX, other.cval.MinX)
+		env.cval.MinY = min(env.cval.MinY, other.cval.MinY)
+		env.cval.MinZ = min(env.cval.MinZ, other.cval.MinZ)
+		env.cval.MaxX = max(env.cval.MaxX, other.cval.MaxX)
+		env.cval.MaxY = max(env.cval.MaxY, other.cval.MaxY)
+		env.cval.MaxZ = max(env.cval.MaxZ, other.cval.MaxZ)
+	} else {
+		env.cval.MinX = other.cval.MinX
+		env.cval.MinY = other.cval.MinY
+		env.cval.MinZ = other.cval.MinY
+		env.cval.MaxX = other.cval.MaxX
+		env.cval.MaxY = other.cval.MaxY
+		env.cval.MaxZ = other.cval.MaxZ
+	}
+	return env
+}
+
+// Return the intersection of this envelope3D with another
+func (env Envelope3D) Intersect(other Envelope3D) Envelope3D {
+	if env.Intersects(other) {
+		if env.IsInit() {
+			env.cval.MinX = max(env.cval.MinX, other.cval.MinX)
+			env.cval.MinY = max(env.cval.MinY, other.cval.MinY)
+			env.cval.MinZ = max(env.cval.MinZ, other.cval.MinZ)
+			env.cval.MaxX = min(env.cval.MaxX, other.cval.MaxX)
+			env.cval.MaxY = min(env.cval.MaxY, other.cval.MaxY)
+			env.cval.MaxZ = min(env.cval.MaxZ, other.cval.MaxZ)
+		} else {
+			env.cval.MinX = other.cval.MinX
+			env.cval.MinY = other.cval.MinY
+			env.cval.MinZ = other.cval.MinZ
+			env.cval.MaxX = other.cval.MaxX
+			env.cval.MaxY = other.cval.MaxY
+			env.cval.MaxZ = other.cval.MaxZ
+		}
+	} else {
+		env.cval.MinX = 0
+		env.cval.MinY = 0
+		env.cval.MinZ = 0
+		env.cval.MaxX = 0
+		env.cval.MaxY = 0
+		env.cval.MaxZ = 0
+	}
+	return env
+}
+
+// Test if one envelope3D intersects another
+func (env Envelope3D) Intersects(other Envelope3D) bool {
+	return env.cval.MinX <= other.cval.MaxX &&
+		env.cval.MaxX >= other.cval.MinX &&
+		env.cval.MinY <= other.cval.MaxY &&
+		env.cval.MaxY >= other.cval.MinY &&
+		env.cval.MinZ <= other.cval.MaxZ &&
+		env.cval.MaxZ >= other.cval.MinZ
+
+}
+
+// Test if one envelope3D completely contains another
+func (env Envelope3D) Contains(other Envelope3D) bool {
+	return env.cval.MinX <= other.cval.MinX &&
+		env.cval.MaxX >= other.cval.MaxX &&
+		env.cval.MinY <= other.cval.MinY &&
+		env.cval.MaxY >= other.cval.MaxY &&
+		env.cval.MinZ <= other.cval.MinZ &&
+		env.cval.MaxZ >= other.cval.MaxZ
+}
+
+/* -------------------------------------------------------------------- */
 /*      Misc functions                                                  */
 /* -------------------------------------------------------------------- */
 
@@ -183,7 +313,7 @@ type Geometry struct {
 	cval C.OGRGeometryH
 }
 
-//Create a geometry object from its well known binary representation
+// Create a geometry object from its well known binary representation
 func CreateFromWKB(wkb []uint8, srs SpatialReference, bytes int) (Geometry, error) {
 	cString := unsafe.Pointer(&wkb[0])
 	var newGeom Geometry
@@ -192,7 +322,7 @@ func CreateFromWKB(wkb []uint8, srs SpatialReference, bytes int) (Geometry, erro
 	))
 }
 
-//Create a geometry object from its well known text representation
+// Create a geometry object from its well known text representation
 func CreateFromWKT(wkt string, srs SpatialReference) (Geometry, error) {
 	cString := C.CString(wkt)
 	defer C.free(unsafe.Pointer(cString))
@@ -202,7 +332,7 @@ func CreateFromWKT(wkt string, srs SpatialReference) (Geometry, error) {
 	))
 }
 
-//Create a geometry object from its GeoJSON representation
+// Create a geometry object from its GeoJSON representation
 func CreateFromJson(_json string) Geometry {
 	cString := C.CString(_json)
 	defer C.free(unsafe.Pointer(cString))
@@ -299,7 +429,12 @@ func (geom Geometry) Envelope() Envelope {
 	return env
 }
 
-// Unimplemented: GetEnvelope3D
+// Compute and return the 3D bounding envelope for this geometry
+func (geom Geometry) Envelope3D() Envelope3D {
+	var env Envelope3D
+	C.OGR_G_GetEnvelope3D(geom.cval, &env.cval)
+	return env
+}
 
 // Assign a geometry from well known binary data
 func (geom Geometry) FromWKB(wkb []uint8, bytes int) error {
@@ -333,7 +468,7 @@ func (geom Geometry) ToWKT() (string, error) {
 	var p *C.char
 	err := OGRErr(C.OGR_G_ExportToWkt(geom.cval, &p))
 	wkt := C.GoString(p)
-	defer C.free(unsafe.Pointer(p))
+	defer C.CPLFree(unsafe.Pointer(p))
 	return wkt, err
 }
 
@@ -385,7 +520,7 @@ func (geom Geometry) ToGML_Ex(options []string) string {
 func (geom Geometry) ToKML() string {
 	val := C.OGR_G_ExportToKML(geom.cval, nil)
 	result := C.GoString(val)
-	C.free(unsafe.Pointer(val))
+	C.CPLFree(unsafe.Pointer(val))
 	return result
 }
 
@@ -787,6 +922,19 @@ func (fd FieldDefinition) SetName(name string) {
 	C.OGR_Fld_SetName(fd.cval, cName)
 }
 
+// Fetch the alternative name (or "alias") of the field
+func (fd FieldDefinition) AlternativeName() string {
+	name := C.OGR_Fld_GetAlternativeNameRef(fd.cval)
+	return C.GoString(name)
+}
+
+// Reset the alternative name (or "alias") for this field.
+func (fd FieldDefinition) SetAlternateName(name string) {
+	cName := C.CString(name)
+	defer C.free(unsafe.Pointer(cName))
+	C.OGR_Fld_SetAlternativeName(fd.cval, cName)
+}
+
 // Fetch the type of this field
 func (fd FieldDefinition) Type() FieldType {
 	fType := C.OGR_Fld_GetType(fd.cval)
@@ -1063,6 +1211,12 @@ func (feature Feature) FieldIndex(name string) int {
 // Return if a field has ever been assigned a value
 func (feature Feature) IsFieldSet(index int) bool {
 	set := C.OGR_F_IsFieldSet(feature.cval, C.int(index))
+	return set != 0
+}
+
+// Test if a field is set and not null.
+func (feature Feature) IsFieldSetAndNotNull(index int) bool {
+	set := C.OGR_F_IsFieldSetAndNotNull(feature.cval, C.int(index))
 	return set != 0
 }
 
@@ -1416,12 +1570,14 @@ func (layer Layer) Delete(index int64) error {
 
 // Fetch the schema information for this layer
 func (layer Layer) Definition() FeatureDefinition {
-	return FeatureDefinition{C.OGR_L_GetLayerDefn(layer.cval)}
+	defn := C.OGR_L_GetLayerDefn(layer.cval)
+	return FeatureDefinition{defn}
 }
 
 // Fetch the spatial reference system for this layer
 func (layer Layer) SpatialReference() SpatialReference {
-	return SpatialReference{C.OGR_L_GetSpatialRef(layer.cval)}
+	sr := C.OGR_L_GetSpatialRef(layer.cval)
+	return SpatialReference{sr}
 }
 
 // Fetch the feature count for this layer
@@ -1491,12 +1647,14 @@ func (layer Layer) Sync() error {
 
 // Fetch the name of the FID column
 func (layer Layer) FIDColumn() string {
-	return C.GoString(C.OGR_L_GetFIDColumn(layer.cval))
+	name := C.OGR_L_GetFIDColumn(layer.cval)
+	return C.GoString(name)
 }
 
 // Fetch the name of the geometry column
 func (layer Layer) GeometryColumn() string {
-	return C.GoString(C.OGR_L_GetGeometryColumn(layer.cval))
+	name := C.OGR_L_GetGeometryColumn(layer.cval)
+	return C.GoString(name)
 }
 
 // Set which fields can be ignored when retrieving features from the layer

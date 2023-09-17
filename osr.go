@@ -3,11 +3,20 @@ package gdal
 /*
 #include "go_gdal.h"
 #include "gdal_version.h"
+#include "ogr_srs_api.h"
 */
 import "C"
 import (
 	"reflect"
 	"unsafe"
+)
+
+type AxisMappingStrategy uint32
+
+const (
+	OAMS_TraditionalGisOrder = AxisMappingStrategy(C.OAMS_TRADITIONAL_GIS_ORDER)
+	OAMS_AuthorityCompliant  = AxisMappingStrategy(C.OAMS_AUTHORITY_COMPLIANT)
+	OAMS_Custom              = AxisMappingStrategy(C.OAMS_CUSTOM)
 )
 
 /* -------------------------------------------------------------------- */
@@ -24,6 +33,10 @@ func CreateSpatialReference(wkt string) SpatialReference {
 	defer C.free(unsafe.Pointer(cString))
 	sr := C.OSRNewSpatialReference(cString)
 	return SpatialReference{sr}
+}
+
+func (sr SpatialReference) SetAxisMappingStrategy(strategy AxisMappingStrategy) {
+	C.OSRSetAxisMappingStrategy(sr.cval, C.OSRAxisMappingStrategy(strategy))
 }
 
 // Initialize SRS based on WKT string
@@ -1171,4 +1184,16 @@ func (ct CoordinateTransform) Destroy() {
 func (ct CoordinateTransform) Transform(numPoints int, xPoints []float64, yPoints []float64, zPoints []float64) bool {
 	val := C.OCTTransform(ct.cval, C.int(numPoints), (*C.double)(unsafe.Pointer(&xPoints[0])), (*C.double)(unsafe.Pointer(&yPoints[0])), (*C.double)(unsafe.Pointer(&zPoints[0])))
 	return int(val) != 0
+}
+
+func (ct CoordinateTransform) TransformPoint(x float64, y float64) (float64, float64, float64) {
+	xs := []float64{x}
+	ys := []float64{y}
+	zs := []float64{0}
+	val := C.OCTTransform(ct.cval, C.int(1), (*C.double)(unsafe.Pointer(&xs[0])), (*C.double)(unsafe.Pointer(&ys[0])), (*C.double)(unsafe.Pointer(&zs[0])))
+	if int(val) != 0 {
+		return xs[0], ys[0], zs[0]
+	} else {
+		return 0., 0., 0.
+	}
 }
