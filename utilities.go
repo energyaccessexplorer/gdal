@@ -208,7 +208,27 @@ func Rasterize(dstDS string, sourceDS Dataset, options []string) (Dataset, error
 	if cerr != 0 {
 		return Dataset{}, fmt.Errorf("rasterize failed with code %d", cerr)
 	}
+
 	return Dataset{ds}, nil
+}
+
+func RasterizeOverwrite(dstDS Dataset, sourceDS Dataset, options []string) error {
+	rasterizeopts := C.GDALRasterizeOptionsNew(COptions(options), nil)
+	defer C.GDALRasterizeOptionsFree(rasterizeopts)
+
+	var cerr C.int
+
+	x := C.GDALRasterize(nil, dstDS.cval, sourceDS.cval, rasterizeopts, &cerr)
+
+	if cerr != 0 {
+		return fmt.Errorf("rasterize failed with code %d", cerr)
+	}
+
+	if x == nil {
+		return fmt.Errorf(C.GoString(C.CPLGetLastErrorMsg()))
+	}
+
+	return nil
 }
 
 func DEMProcessing(dstDS string, sourceDS Dataset, processing string, colorFileName string, options []string) (Dataset, error) {
